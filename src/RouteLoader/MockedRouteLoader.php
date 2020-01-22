@@ -6,6 +6,7 @@ use ResponseMocker\Controller\GetController;
 use ResponseMocker\Controller\MockController;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -26,7 +27,7 @@ final class MockedRouteLoader extends Loader
 
     public function __construct(string $resourceLocation, string $routePrefix)
     {
-        $this->finder = new Finder();
+        $this->finder = Finder::create();
         $this->resourceLocation = $resourceLocation;
         $this->routePrefix = $routePrefix;
     }
@@ -43,10 +44,31 @@ final class MockedRouteLoader extends Loader
             return $routes;
         }
 
+
+        $files = $this->finder->in($this->resourceLocation)->files();
+
+        /* @var SplFileInfo $file */
+        foreach ($files as $file) {
+            $path = sprintf('%s/%s', $this->routePrefix, $file->getRelativePath());
+            $method = $file->getBasename('.json');
+
+            $defaults = [
+                '_controller' => sprintf('%s::%sAction', MockController::class, $method)
+            ];
+
+            $requirements = [];
+
+            $route = new Route($path, $defaults, $requirements, [], null, [], [$method]);
+
+            // add the new route to the route collection
+            $routeName = $file->getRelativePath();
+            $routes->add($routeName, $route);
+        }
+
+        /*
         $directories = $this->finder->in($this->resourceLocation)->directories();
 
         foreach ($directories as $directory) {
-
 
             $path = sprintf('%s/%s', $this->routePrefix, $directory);
 
@@ -63,7 +85,7 @@ final class MockedRouteLoader extends Loader
             $routeName = $directory;
             $routes->add($routeName, $route);
 
-        }
+        }*/
 
         $this->isLoaded = true;
 
