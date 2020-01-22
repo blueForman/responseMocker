@@ -1,0 +1,33 @@
+version: '3.2'
+
+services:
+
+  nginx:
+      image: nginx:latest
+      links:
+        - php
+      volumes:
+        - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+        - ./:/app
+
+  database:
+      image: mysql:5.7
+      hostname: database
+      volumes:
+        - ./volumes/docker/mysql:/var/lib/mysql
+      environment:
+        MYSQL_ROOT_USER: root
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_DATABASE: tester
+
+  php:
+    build:
+      context: docker/php
+      dockerfile: Dockerfile
+    links:
+      - database
+    volumes:
+      - ./:/app
+    depends_on:
+      - database
+

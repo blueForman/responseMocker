@@ -1,0 +1,15 @@
+language: generic
+
+services:
+  - docker
+
+before_install:
+  - mkdir -m777 vendor
+  - mkdir -m777 var
+  - mkdir -m777 config/secrets
+  - mkdir -m777 bin/.phpunit
+  - install -m 777 /dev/null .env
+  - docker-compose run php composer install
+
+script:
+  - docker-compose run php php bin/phpunit
