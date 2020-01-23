@@ -2,7 +2,6 @@
 
 namespace ResponseMocker\RouteLoader;
 
-use ResponseMocker\Controller\GetController;
 use ResponseMocker\Controller\MockController;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Finder\Finder;
@@ -49,43 +48,25 @@ final class MockedRouteLoader extends Loader
 
         /* @var SplFileInfo $file */
         foreach ($files as $file) {
-            $path = sprintf('%s/%s', $this->routePrefix, $file->getRelativePath());
+            $path = sprintf('%s/%s{params}', $this->routePrefix, $file->getRelativePath());
             $method = $file->getBasename('.json');
 
             $defaults = [
-                '_controller' => sprintf('%s::%sAction', MockController::class, $method)
+                '_controller' => sprintf('%s::%sAction', MockController::class, $method),
+                'fileLocation' => $file->getPathname(),
+                'path' => $file->getRelativePath()
             ];
 
-            $requirements = [];
+            $requirements = [
+                'params' => '[\w\/?=&,]*'
+            ];
 
             $route = new Route($path, $defaults, $requirements, [], null, [], [$method]);
 
             // add the new route to the route collection
-            $routeName = $file->getRelativePath();
+            $routeName = $method . $file->getRelativePath();
             $routes->add($routeName, $route);
         }
-
-        /*
-        $directories = $this->finder->in($this->resourceLocation)->directories();
-
-        foreach ($directories as $directory) {
-
-            $path = sprintf('%s/%s', $this->routePrefix, $directory);
-
-            $defaults = [
-                '_controller' => MockController::class . '::getAction',
-                'method' => 'GET'
-            ];
-
-            $requirements = [];
-
-            $route = new Route($path, $defaults, $requirements);
-
-            // add the new route to the route collection
-            $routeName = $directory;
-            $routes->add($routeName, $route);
-
-        }*/
 
         $this->isLoaded = true;
 
