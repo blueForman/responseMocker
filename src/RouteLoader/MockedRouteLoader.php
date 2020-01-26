@@ -53,7 +53,7 @@ final class MockedRouteLoader extends Loader
 
             $defaults = [
                 '_controller' => sprintf('%s::%sAction', MockController::class, $method),
-                'fileLocation' => $file->getPathname(),
+                'fileLocation' => $file->getRealPath(),
                 'path' => $file->getRelativePath()
             ];
 
