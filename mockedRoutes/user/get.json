@@ -1,5 +1,12 @@
-{
-  "1": {
-    "text": "bok"
+[
+  {
+    "content": "user",
+    "statusCode": 200,
+    "queryString": "/1"
+  },
+  {
+    "content": "anotherUser",
+    "statusCode": 200,
+    "queryString": "?x=2"
   }
-}
+]

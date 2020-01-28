@@ -1,10 +1,12 @@
-{
-  "/1": {
+[
+  {
     "content": "ad",
-    "statusCode": 200
+    "statusCode": 200,
+    "queryString": "/1"
   },
-  "?x=2": {
+  {
     "content": "anotherAd",
-    "statusCode": 200
+    "statusCode": 200,
+    "queryString": "?x=2"
   }
-}
+ ]
