@@ -1,0 +1,12 @@
+[
+  {
+    "content": "deleteUser",
+    "statusCode": 200,
+    "queryString": "/1"
+  },
+  {
+    "content": "deleteAnotherUser",
+    "statusCode": 200,
+    "queryString": "?x=2"
+  }
+]

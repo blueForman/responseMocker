@@ -30,14 +30,22 @@ final class MockController
         return  $this->repository->findGetDataForQuery($fileLocation, $getParameters);
     }
 
-    public function deleteAction(string $fileLocation): Response
+    public function deleteAction(string $fileLocation, string $path, Request $request): Response
     {
-        return new Response('bok');
+        $components = $request->getRequestUri();
+        $urlComponents = explode($path, $components);
+        $getParameters = array_pop($urlComponents);
+
+        return  $this->repository->findDeleteDataForQuery($fileLocation, $getParameters);
     }
 
-    public function postAction(string $fileLocation): Response
+    public function postAction(string $fileLocation, string $path, Request $request): Response
     {
-        return new Response('bok');
+        $components = $request->getRequestUri();
+        $urlComponents = explode($path, $components);
+        $getParameters = array_pop($urlComponents);
+
+        return  $this->repository->findGetDataForQuery($fileLocation, $getParameters);
     }
 
     public function patchAction(string $fileLocation): Response
