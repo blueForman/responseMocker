@@ -71,4 +71,37 @@ final class ResponseRepository
 
         return new JsonResponse($responseData['content'], $responseData['statusCode']);
     }
+
+    public function findPostDataForQuery(string $fileLocation, string $queryData, array $postData): JsonResponse
+    {
+        $fileInfo = new \SplFileInfo($fileLocation);
+
+        if (!$fileInfo->isFile()) {
+            throw new NotFoundHttpException();
+        }
+
+        /** @var string $serializedContent */
+        $serializedContent = file_get_contents($fileInfo->getRealPath());
+
+        $content = json_decode($serializedContent, true);
+
+        $responses = new ArrayCollection($content);
+
+        $eb = new ExpressionBuilder();
+        $criteria = new Criteria();
+
+        $criteria
+            ->where($eb->eq('queryString', $queryData))
+            ->andWhere($eb->eq('postParameters', $postData));
+
+        $responseData = $responses->matching($criteria)->first();
+
+        //var_dump($content);
+
+        if (empty($responseData)) {
+            throw new NotFoundHttpException();
+        }
+
+        return new JsonResponse($responseData['content'], $responseData['statusCode']);
+    }
 }

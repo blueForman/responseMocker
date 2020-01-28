@@ -1,0 +1,18 @@
+[
+  {
+    "content": "ad124",
+    "statusCode": 200,
+    "queryString": "/1",
+    "postParameters": {
+        "name": "ime"
+    }
+  },
+  {
+    "content": "anotherAd333",
+    "statusCode": 200,
+    "queryString": "?x=2",
+    "postParameters": {
+      "lastname": "whocares"
+    }
+  }
+]
