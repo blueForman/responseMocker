@@ -49,9 +49,14 @@ final class MockController
         return  $this->repository->findPostDataForQuery($fileLocation, $getParameters, $postData);
     }
 
-    public function patchAction(string $fileLocation): Response
+    public function patchAction(string $fileLocation, string $path, Request $request): Response
     {
-        return new Response('bok');
+        $components = $request->getRequestUri();
+        $urlComponents = explode($path, $components);
+        $getParameters = array_pop($urlComponents);
+        $postData = $request->request->all();
+
+        return  $this->repository->findPatchDataForQuery($fileLocation, $getParameters, $postData);
     }
 
 }
