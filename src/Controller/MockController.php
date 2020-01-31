@@ -27,7 +27,7 @@ final class MockController
         $urlComponents = explode($path, $components);
         $getParameters = array_pop($urlComponents);
 
-        return  $this->repository->findGetDataForQuery($fileLocation, $getParameters);
+        return  $this->repository->findResponseDataForQuery($fileLocation, $getParameters);
     }
 
     public function deleteAction(string $fileLocation, string $path, Request $request): Response
@@ -36,7 +36,7 @@ final class MockController
         $urlComponents = explode($path, $components);
         $getParameters = array_pop($urlComponents);
 
-        return  $this->repository->findDeleteDataForQuery($fileLocation, $getParameters);
+        return  $this->repository->findResponseDataForQuery($fileLocation, $getParameters);
     }
 
     public function postAction(string $fileLocation, string $path, Request $request): Response
@@ -46,7 +46,7 @@ final class MockController
         $getParameters = array_pop($urlComponents);
         $postData = $request->request->all();
 
-        return  $this->repository->findPostDataForQuery($fileLocation, $getParameters, $postData);
+        return  $this->repository->findResponseDataForQuery($fileLocation, $getParameters, $postData);
     }
 
     public function patchAction(string $fileLocation, string $path, Request $request): Response
@@ -56,7 +56,7 @@ final class MockController
         $getParameters = array_pop($urlComponents);
         $postData = $request->request->all();
 
-        return  $this->repository->findPatchDataForQuery($fileLocation, $getParameters, $postData);
+        return  $this->repository->findResponseDataForQuery($fileLocation, $getParameters, $postData);
     }
 
 }

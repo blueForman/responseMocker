@@ -16,63 +16,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 final class ResponseRepository
 {
-    public function findGetDataForQuery(string $fileLocation, string $queryData): JsonResponse
-    {
-        $fileInfo = new \SplFileInfo($fileLocation);
-
-        if (!$fileInfo->isFile()) {
-            throw new NotFoundHttpException();
-        }
-
-        /** @var string $serializedContent */
-        $serializedContent = file_get_contents($fileInfo->getRealPath());
-
-        $content = json_decode($serializedContent, true);
-
-        $responses = new ArrayCollection($content);
-
-        $eb = new ExpressionBuilder();
-        $expression = $eb->eq('queryString', $queryData);
-        $responseData = $responses->matching(new Criteria($expression))->first();
-
-        //var_dump($content);
-
-        if (empty($responseData)) {
-            throw new NotFoundHttpException();
-        }
-
-        return new JsonResponse($responseData['content'], $responseData['statusCode']);
-    }
-
-    public function findDeleteDataForQuery(string $fileLocation, string $queryData): JsonResponse
-    {
-        $fileInfo = new \SplFileInfo($fileLocation);
-
-        if (!$fileInfo->isFile()) {
-            throw new NotFoundHttpException();
-        }
-
-        /** @var string $serializedContent */
-        $serializedContent = file_get_contents($fileInfo->getRealPath());
-
-        $content = json_decode($serializedContent, true);
-
-        $responses = new ArrayCollection($content);
-
-        $eb = new ExpressionBuilder();
-        $expression = $eb->eq('queryString', $queryData);
-        $responseData = $responses->matching(new Criteria($expression))->first();
-
-        //var_dump($content);
-
-        if (empty($responseData)) {
-            throw new NotFoundHttpException();
-        }
-
-        return new JsonResponse($responseData['content'], $responseData['statusCode']);
-    }
-
-    public function findPostDataForQuery(string $fileLocation, string $queryData, array $postData): JsonResponse
+    public function findResponseDataForQuery(string $fileLocation, string $queryData, ?array $postData = []): JsonResponse
     {
         $fileInfo = new \SplFileInfo($fileLocation);
 
@@ -90,11 +34,15 @@ final class ResponseRepository
         $eb = new ExpressionBuilder();
         $criteria = new Criteria();
 
-        $criteria
-            ->where($eb->eq('queryString', $queryData))
-            ->andWhere($eb->eq('postParameters', $postData));
+        $criteria->where($eb->eq('queryString', $queryData));
 
-        $responseData = $responses->matching($criteria)->first();
+        $responseData = $responses->matching($criteria);
+
+        if (!empty($postData)) {
+            $responseData = $this->findClosestMatch($responseData, $postData);
+        } else {
+            $responseData = $responseData->first();
+        }
 
         //var_dump($content);
 
@@ -105,36 +53,21 @@ final class ResponseRepository
         return new JsonResponse($responseData['content'], $responseData['statusCode']);
     }
 
-    public function findPatchDataForQuery(string $fileLocation, string $queryData, array $postData): JsonResponse
+    private function findClosestMatch(ArrayCollection $responses, array $postData): array
     {
-        $fileInfo = new \SplFileInfo($fileLocation);
+        $closesMatch = [
+            'count' => 0,
+            'response' => []
+        ];
+        foreach ($responses->getValues() as $response) {
+            $matches = array_intersect_assoc($response, $postData);
 
-        if (!$fileInfo->isFile()) {
-            throw new NotFoundHttpException();
+            if (count($matches) >= count($closesMatch['response'])) {
+                $closesMatch['count'] = count($closesMatch);
+                $closesMatch['response'] = $response;
+            }
         }
 
-        /** @var string $serializedContent */
-        $serializedContent = file_get_contents($fileInfo->getRealPath());
-
-        $content = json_decode($serializedContent, true);
-
-        $responses = new ArrayCollection($content);
-
-        $eb = new ExpressionBuilder();
-        $criteria = new Criteria();
-
-        $criteria
-            ->where($eb->eq('queryString', $queryData))
-            ->andWhere($eb->eq('postParameters', $postData));
-
-        $responseData = $responses->matching($criteria)->first();
-
-        //var_dump($content);
-
-        if (empty($responseData)) {
-            throw new NotFoundHttpException();
-        }
-
-        return new JsonResponse($responseData['content'], $responseData['statusCode']);
+        return $closesMatch['response'];
     }
 }
