@@ -55,19 +55,14 @@ final class ResponseRepository
 
     private function findClosestMatch(ArrayCollection $responses, array $postData): array
     {
-        $closesMatch = [
-            'count' => 0,
-            'response' => []
-        ];
         foreach ($responses->getValues() as $response) {
             $matches = array_intersect_assoc($response, $postData);
 
-            if (count($matches) >= count($closesMatch['response'])) {
-                $closesMatch['count'] = count($closesMatch);
-                $closesMatch['response'] = $response;
+            if (count($matches) === count($response)) {
+                return $response;
             }
         }
 
-        return $closesMatch['response'];
+        return [];
     }
 }
