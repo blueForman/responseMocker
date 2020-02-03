@@ -1,8 +1,8 @@
 {
-    "name": "symfony/website-skeleton",
-    "type": "project",
+    "name": "response-mocker/response-mocker",
+    "type": "symfony-bundle",
     "license": "MIT",
-    "description": "A skeleton to start a new Symfony website",
+    "description": "Symfony based mockserver",
     "require": {
         "php": "^7.2.5",
         "ext-ctype": "*",
@@ -54,7 +54,6 @@
         }
     },
     "replace": {
-        "paragonie/random_compat": "2.*",
         "symfony/polyfill-ctype": "*",
         "symfony/polyfill-iconv": "*",
         "symfony/polyfill-php72": "*",
@@ -74,13 +73,10 @@
             "@auto-scripts"
         ]
     },
-    "conflict": {
-        "symfony/symfony": "*"
-    },
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "5.0.*"
+            "require": "^4.4 | ^5.0"
         }
     }
 }

@@ -56,9 +56,9 @@ final class ResponseRepository
     private function findClosestMatch(ArrayCollection $responses, array $postData): array
     {
         foreach ($responses->getValues() as $response) {
-            $matches = array_intersect_assoc($response, $postData);
+            $matches = array_intersect_assoc($response['postParameters'], $postData);
 
-            if (count($matches) === count($response)) {
+            if (count($matches) === count($response['postParameters'])) {
                 return $response;
             }
         }

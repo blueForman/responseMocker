@@ -1,4 +1,4 @@
-FROM php:7.3.6-fpm-alpine3.9
+FROM php:7.4.2-fpm-alpine3.11
 
 MAINTAINER Marko Vušak <marko.vusak2@gmail.com>
 
@@ -9,7 +9,7 @@ RUN apk update && apk upgrade && \
 
 RUN pecl channel-update pecl.php.net && \
     pecl install xdebug && \
-    docker-php-ext-install mbstring mysqli pdo_mysql sysvsem zip calendar && \
+    docker-php-ext-install mysqli pdo_mysql sysvsem zip calendar && \
     docker-php-ext-enable xdebug
 
 RUN echo "xdebug.remote_enable=1"                                               >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \

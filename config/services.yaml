@@ -28,7 +28,7 @@ services:
 
     ResponseMocker\RouteLoader\MockedRouteLoader:
         arguments:
-            $resourceLocation: "mockedRoutes"
-            $routePrefix: "mock"
+            $resourceLocation: "@=container.hasParameter('routesLocation') ? parameter('routesLocation') : ''"
+            $routePrefix: "@=container.hasParameter('routePrefix') ? parameter('routePrefix') : ''"
         tags: [routing.loader]
 
