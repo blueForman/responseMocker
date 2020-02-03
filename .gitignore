@@ -7,7 +7,8 @@
 /public/bundles/
 /var/
 /vendor/
-/volumes
+/volumes/
+.idea
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###
